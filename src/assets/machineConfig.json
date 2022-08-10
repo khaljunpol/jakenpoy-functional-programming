@@ -1,0 +1,194 @@
+{
+    "id": "gameLoopMachine",
+    "initial": "INITIALIZE",
+    "context": {
+        "state": "START",
+        "win": 0,
+        "lose": 0,
+        "draw": 0,
+        "result": "DRAW",
+        "playerHand": "PAPER",
+        "compHand": "PAPER"
+    },
+    "states": {
+        "INITIALIZE": {
+            "on": {
+                "START": "START"
+            },
+            "after": {
+                "1000": {
+                    "target": "START"
+                }
+            },
+            "onDone": {
+                "actions": "SET_STATE_START"
+            }
+        },
+        "START": {
+            "initial": "SETUP",
+            "states": {
+                "SETUP": {
+                    "on": {
+                        "NEXT": "PROCESS"
+                    }
+                },
+                "PROCESS": {
+                    "initial": "SELECT_START",
+                    "states": {
+                        "SELECT_START": {
+                            "on": {
+                                "NEXT": "SELECTED"
+                            },
+                            "after": {
+                                "1000": {
+                                    "target": "SELECT_END"
+                                }
+                            }
+                        },
+                        "SELECTED": {
+                            "on": {
+                                "NEXT": "SELECT_END"
+                            }
+                        },
+                        "SELECT_END": {
+                            "type": "final"
+                        }
+                    },
+                    "onDone": {
+                        "target": "END_PROCESS",
+                        "actions": "SET_HAND"
+                    }
+                },
+                "END_PROCESS": {
+                    "after": {
+                        "500": {
+                            "target": "COMPLETE"
+                        }
+                    }
+                },
+                "COMPLETE": {
+                    "type": "final"
+                }
+            },
+            "onDone": {
+                "target": "PLAY",
+                "actions": "SET_STATE_PLAY"
+            }
+        },
+        "PLAY": {
+            "initial": "SETUP",
+            "states": {
+                "SETUP": {
+                    "on": {
+                        "NEXT": "PROCESS"
+                    },
+                    "after": {
+                        "1000": {
+                            "target": "PROCESS"
+                        }
+                    }
+                },
+                "PROCESS": {
+                    "initial": "ENTER",
+                    "states": {
+                        "ENTER": {
+                            "on": {
+                                "DONE_ENTER": "PREPARE"
+                            }
+                        },
+                        "PREPARE": {
+                            "on": {
+                                "DONE_PREPARE": "SHOW"
+                            }
+                        },
+                        "SHOW": {
+                            "on": {
+                                "DONE_SHOW": "EXIT"
+                            }
+                        },
+                        "EXIT": {
+                            "type": "final"
+                        }
+                    },
+                    "onDone": {
+                        "target": "END_PROCESS"
+                    }
+                },
+                "END_PROCESS": {
+                    "after": {
+                        "500": {
+                            "target": "COMPLETE"
+                        }
+                    }
+                },
+                "COMPLETE": {
+                    "type": "final"
+                }
+            },
+            "onDone": {
+                "target": "END",
+                "actions": [
+                    "SET_STATE_END",
+                    "SET_RESULT"
+                ]
+            }
+        },
+        "END": {
+            "initial": "SETUP",
+            "states": {
+                "SETUP": {
+                    "on": {
+                        "NEXT": "PROCESS"
+                    },
+                    "after": {
+                        "100": {
+                            "target": "PROCESS"
+                        }
+                    }
+                },
+                "PROCESS": {
+                    "initial": "PRESENT_START",
+                    "states": {
+                        "PRESENT_START": {
+                            "on": {
+                                "DONE_PRESENT_START": "PRESENTED"
+                            }
+                        },
+                        "PRESENTED": {
+                            "on": {
+                                "DONE_PRESENTED": "PRESENT_COMPLETE"
+                            }
+                        },
+                        "PRESENT_COMPLETE": {
+                            "type": "final"
+                        }
+                    },
+                    "onDone": {
+                        "target": "END_PROCESS"
+                    }
+                },
+                "END_PROCESS": {
+                    "after": {
+                        "2000": {
+                            "target": "ADDITIONAL_END_PROCESS"
+                        }
+                    }
+                },
+                "ADDITIONAL_END_PROCESS": {
+                    "after": {
+                        "1000": {
+                            "target": "COMPLETE"
+                        }
+                    }
+                },
+                "COMPLETE": {
+                    "type": "final"
+                }
+            },
+            "onDone": {
+                "target": "START",
+                "actions": "SET_STATE_START"
+            }
+        }
+    }
+}
